@@ -20,3 +20,5 @@
 # PolyMNIST/MMNIST/test/
 
 PolyMNIST
+*.csv
+*pkl
