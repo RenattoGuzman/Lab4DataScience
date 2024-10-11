@@ -1,6 +1,6 @@
-# Lab4DataScience
+# Lab8DataScience
 
-## Character Recognition
+## Disaster Prediction
  
 ### Integrantes:
 
