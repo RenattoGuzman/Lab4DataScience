@@ -1,0 +1,32 @@
+# Python virtual environment
+venv/
+*.egg-info/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+ENV/
+env.bak/
+venv.bak/
+# Distribución de paquetes
+dist/
+build/
+eggs/
+*.egg
+# Archivos de configuración
+*.ini
+*.log
+# Archivos de pruebas
+.coverage
+nosetests.xml
+test_output/
+# Pytest
+.cache
+# Archivos de Jupyter Notebook
+.ipynb_checkpoints
+# Archivos de configuración de editor
+.vscode/
+.idea/
+*.swp
