@@ -19,6 +19,8 @@ def load_data():
 
 data = load_data()
 
+
+
 # Título
 st.title("Cuadro de Mando Interactivo - Análisis de Reviews de Productos")
 
@@ -110,3 +112,114 @@ st.write("Gráfico de dispersión (Fecha de agregado vs Calificación)")
 
 fig_filtered_scatter = px.scatter(filtered_data, x='dateAdded', y='reviews.rating', color='brand', hover_data=['reviews.text'], title=f"Calificaciones filtradas por {rating_filter} y superiores")
 st.plotly_chart(fig_filtered_scatter)
+
+colors = ['#003087', '#6CACE4', '#FFC427', '#FFFFFF', '#0A0908']
+
+# Visualización 5: Gráfico Circular para Categorías de Productos
+st.subheader("5. Distribución de Productos por Categorías")
+
+# Procesar las categorías
+category_counts = data['categories'].str.split(',').explode().value_counts()
+
+# Seleccionar los 5 principales
+top_categories = category_counts.head(5)
+
+# Crear gráfico circular interactivo con Plotly
+fig_pie = px.pie(
+    top_categories, 
+    values=top_categories.values, 
+    names=top_categories.index, 
+    title='Distribución de Productos por Categorías Principales',
+    color_discrete_sequence=colors
+)
+
+st.plotly_chart(fig_pie)
+
+
+# Visualización 6: Gráfico de Barras para las Marcas Más Frecuentes
+st.subheader("6. Marcas Más Frecuentes")
+
+# Calcular las 10 marcas más frecuentes
+brand_counts = data['brand'].value_counts().head(10)
+
+# Crear gráfico de barras interactivo con Plotly
+fig_brand_bar = px.bar(
+    brand_counts,
+    x=brand_counts.index,
+    y=brand_counts.values,
+    labels={'x': 'Marca', 'y': 'Número de Productos'},
+    title='Frecuencia de Productos por Marca',
+    color_discrete_sequence=colors
+)
+
+# Ajustar rotación de las etiquetas del eje x
+fig_brand_bar.update_layout(xaxis_tickangle=45)
+
+# Mostrar gráfico en Streamlit
+st.plotly_chart(fig_brand_bar)
+
+# Visualización 7: Gráfico de Barras para las Top 10 Ciudades con Más Reseñas
+st.subheader("7. Top 10 Ciudades con Más Reseñas")
+
+# Calcular las 10 ciudades más frecuentes
+city_counts = data['reviews.userCity'].value_counts().head(10)
+
+# Colores personalizados
+
+# Crear gráfico de barras interactivo con Plotly
+fig_city_bar = px.bar(
+    city_counts,
+    x=city_counts.index,
+    y=city_counts.values,
+    labels={'x': 'Ciudad', 'y': 'Número de Reseñas'},
+    title='Top 10 Ciudades con Más Reseñas',
+    color_discrete_sequence=[colors[2]]  # Color personalizado
+)
+
+# Ajustar la rotación de las etiquetas del eje X
+fig_city_bar.update_layout(xaxis_tickangle=45)
+
+# Mostrar gráfico en Streamlit
+st.plotly_chart(fig_city_bar)
+
+
+# Visualización 8: Histograma de Categorías Más Comunes por Ciudad
+st.subheader("8. Histograma de Categorías por Ciudad")
+
+# Calcular las 10 ciudades con más reseñas
+top_cities = data['reviews.userCity'].value_counts().head(10).index.tolist()
+
+# Crear checkboxes para seleccionar las ciudades
+selected_cities = st.multiselect(
+    "Seleccione las ciudades a incluir:",
+    options=top_cities,
+    default='Chicago'
+)
+
+# Filtrar los datos según las ciudades seleccionadas
+filtered_data = data[data['reviews.userCity'].isin(selected_cities)]
+
+# Calcular las categorías más comunes en las ciudades seleccionadas
+category_counts = (
+    filtered_data['categories']
+    .str.split(',')
+    .explode()
+    .value_counts()
+    .head(10)  # Mostrar solo las 10 categorías más comunes
+)
+
+# Crear el histograma interactivo con Plotly
+fig_hist = px.bar(
+    category_counts,
+    x=category_counts.index,
+    y=category_counts.values,
+    labels={'x': 'Categoría', 'y': 'Frecuencia'},
+    title=f'Categorías Más Comunes en Ciudades Seleccionadas',
+    color_discrete_sequence=[colors[1]]
+)
+
+# Ajustar la rotación de las etiquetas del eje X
+fig_hist.update_layout(xaxis_tickangle=45)
+
+# Mostrar el gráfico en Streamlit
+st.plotly_chart(fig_hist)
